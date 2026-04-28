@@ -1,0 +1,28 @@
+HELP.md
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+.classpath
+.project
+.settings/
+
+# Runtime
+.env
+*.log
+
+# Frontend/generated artifacts must not enter auth service
+node_modules/
+dist/
+src/main/resources/static/
+
+# OS
+.DS_Store
