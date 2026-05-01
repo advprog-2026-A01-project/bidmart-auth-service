@@ -3,7 +3,6 @@ package id.ac.ui.cs.advprog.backend.auth.api;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import id.ac.ui.cs.advprog.backend.auth.model.AuthProperties;
 import id.ac.ui.cs.advprog.backend.auth.model.Role;
-import id.ac.ui.cs.advprog.backend.auth.repository.SessionRepository;
 import id.ac.ui.cs.advprog.backend.auth.service.AuthLoginService;
 import id.ac.ui.cs.advprog.backend.auth.service.AuthRegistrationService;
 import id.ac.ui.cs.advprog.backend.auth.service.AuthTokenService;
@@ -128,11 +127,11 @@ public class AuthPublicController {
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestBody final RefreshRequest body, final HttpServletRequest request) {
         final var meta = new AuthTokenService.ClientMeta(request.getHeader("User-Agent"), request.getRemoteAddr());
-        final SessionRepository.TokenPair pair = tokenService.refresh(body.refreshToken(), meta);
+        final AuthTokenService.IssuedTokenPair pair = tokenService.refresh(body.refreshToken(), meta);
         return ResponseEntity.ok(toTokenResponse(pair));
     }
 
-    private TokenResponse toTokenResponse(final SessionRepository.TokenPair pair) {
+    private TokenResponse toTokenResponse(final AuthTokenService.IssuedTokenPair pair) {
         final long expiresInSec = Duration.ofMinutes(props.getAccessTtlMinutes()).toSeconds();
         return new TokenResponse(pair.accessToken().toString(), pair.refreshToken().toString(), "Bearer", expiresInSec);
     }

@@ -30,12 +30,16 @@ import id.ac.ui.cs.advprog.backend.auth.service.MfaChallengeService;
 import id.ac.ui.cs.advprog.backend.auth.service.MfaVerificationService;
 import id.ac.ui.cs.advprog.backend.auth.service.SessionLimitService;
 import id.ac.ui.cs.advprog.backend.auth.service.UserAuthenticator;
+import id.ac.ui.cs.advprog.backend.auth.jwt.JwtTokenService;
+import id.ac.ui.cs.advprog.backend.rbac.repository.RbacRepository;
 
 class AuthLoginServiceTest {
 
     private UserAuthRepository userAuthRepository;
     private UserSecurityRepository userSecurityRepository;
     private SessionRepository sessionRepository;
+    private RbacRepository rbacRepository;
+    private JwtTokenService jwtTokenService;
     private PasswordEncoder passwordEncoder;
     private MfaChallengeRepository mfaChallengeRepository;
     private EmailService emailService;
@@ -48,9 +52,12 @@ class AuthLoginServiceTest {
         userAuthRepository = Mockito.mock(UserAuthRepository.class);
         userSecurityRepository = Mockito.mock(UserSecurityRepository.class);
         sessionRepository = Mockito.mock(SessionRepository.class);
+        rbacRepository = Mockito.mock(RbacRepository.class);
+        jwtTokenService = Mockito.mock(JwtTokenService.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
         mfaChallengeRepository = Mockito.mock(MfaChallengeRepository.class);
         emailService = Mockito.mock(EmailService.class);
+
 
         final AuthProperties props = new AuthProperties();
         props.setMaxSessionsPerUser(10);
@@ -68,7 +75,14 @@ class AuthLoginServiceTest {
                 10,
                 AuthProperties.SessionOverflowPolicy.REVOKE_OLDEST
         );
-        final AuthTokenService token = new AuthTokenService(sessionRepository, props, clock);
+        final AuthTokenService token = new AuthTokenService(
+                sessionRepository,
+                userAuthRepository,
+                rbacRepository,
+                jwtTokenService,
+                props,
+                clock
+        );
         final AuthMfaManagementService mfaManage = new AuthMfaManagementService(userSecurityRepository, clock);
         final MfaChallengeService challengeService =
                 new MfaChallengeService(mfaChallengeRepository, passwordEncoder, props, emailService);

@@ -1,6 +1,4 @@
 import org.gradle.api.plugins.quality.Pmd
-import org.gradle.api.tasks.Exec
-import org.gradle.api.tasks.Copy
 
 plugins {
     java
@@ -52,6 +50,9 @@ dependencies {
 
     // Untuk mail ngirim kode verifikasi
     implementation("org.springframework.boot:spring-boot-starter-mail")
+
+    implementation("org.springframework.security:spring-security-oauth2-jose")
+    implementation("org.springframework.security:spring-security-oauth2-resource-server")
 }
 
 tasks.withType<Test> {

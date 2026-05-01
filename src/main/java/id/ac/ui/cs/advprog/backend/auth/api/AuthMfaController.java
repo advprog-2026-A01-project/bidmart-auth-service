@@ -4,8 +4,11 @@ import id.ac.ui.cs.advprog.backend.auth.model.AuthException;
 import id.ac.ui.cs.advprog.backend.auth.model.AuthPrincipal;
 import id.ac.ui.cs.advprog.backend.auth.service.AuthLoginService;
 import id.ac.ui.cs.advprog.backend.auth.service.AuthRegistrationService;
+import id.ac.ui.cs.advprog.backend.auth.service.AuthTokenService;
 import id.ac.ui.cs.advprog.backend.security.RequiresPermission;
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +33,7 @@ public class AuthMfaController {
     public ResponseEntity<?> verifyMfa(@RequestBody final MfaVerifyRequest body, final HttpServletRequest request) {
         final var meta = new AuthLoginService.ClientMeta(request.getHeader("User-Agent"), request.getRemoteAddr());
         final var tokens = loginService.verifyMfa(body.challengeId(), body.code(), meta);
-        return ResponseEntity.ok(tokens);
+        return ResponseEntity.ok(toTokenResponse(tokens));
     }
 
     @PostMapping("/enable-email")
@@ -63,6 +66,11 @@ public class AuthMfaController {
         ));
     }
 
+    private static TokenResponse toTokenResponse(final AuthTokenService.IssuedTokenPair pair) {
+        final long expiresIn = Math.max(0L, Duration.between(Instant.now(), pair.accessExpiresAt()).toSeconds());
+        return new TokenResponse(pair.accessToken(), pair.refreshToken().toString(), "Bearer", expiresIn);
+    }
+
     private static AuthPrincipal requirePrincipal(final Authentication authentication) {
         if (authentication == null || !(authentication.getPrincipal() instanceof AuthPrincipal p)) {
             throw new AuthException(HttpStatus.UNAUTHORIZED, "unauthorized");
@@ -71,6 +79,8 @@ public class AuthMfaController {
     }
 
     public record MfaVerifyRequest(String challengeId, String code) {}
+
+    public record TokenResponse(String accessToken, String refreshToken, String tokenType, long expiresIn) {}
 
     public record PrivateKeyRotateResponse(
             boolean ok,

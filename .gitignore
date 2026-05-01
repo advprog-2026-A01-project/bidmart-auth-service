@@ -26,3 +26,6 @@ src/main/resources/static/
 
 # OS
 .DS_Store
+
+# Local JWT keys
+.local-keys/

@@ -1,7 +1,6 @@
 package id.ac.ui.cs.advprog.backend.auth.service;
 
 import id.ac.ui.cs.advprog.backend.auth.model.Role;
-import id.ac.ui.cs.advprog.backend.auth.repository.SessionRepository;
 import id.ac.ui.cs.advprog.backend.auth.repository.UserAuthRepository;
 import java.time.Clock;
 import java.time.Instant;
@@ -15,7 +14,7 @@ public class AuthLoginService {
     public record ClientMeta(String userAgent, String ip) {}
 
     public sealed interface LoginResult permits LoginResult.Tokens, LoginResult.MfaRequired {
-        record Tokens(SessionRepository.TokenPair tokens) implements LoginResult {}
+        record Tokens(AuthTokenService.IssuedTokenPair tokens) implements LoginResult {}
         record MfaRequired(UUID challengeId, String method, long expiresInSeconds, String devCode) implements LoginResult {}
     }
 
@@ -72,7 +71,7 @@ public class AuthLoginService {
     }
 
     @Transactional
-    public SessionRepository.TokenPair verifyMfa(final String challengeId, final String code, final ClientMeta meta) {
+    public AuthTokenService.IssuedTokenPair verifyMfa(final String challengeId, final String code, final ClientMeta meta) {
         final Instant now = Instant.now(clock);
         final long userId = mfaVerificationService.verifyAndConsume(challengeId, code, now);
 

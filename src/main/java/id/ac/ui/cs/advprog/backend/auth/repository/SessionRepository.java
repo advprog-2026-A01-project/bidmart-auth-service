@@ -60,7 +60,7 @@ public class SessionRepository {
                 ip
         );
 
-        return new TokenPair(accessToken, refreshToken, accessExpiresAt, refreshExpiresAt);
+        return new TokenPair(accessToken, refreshToken, accessExpiresAt, refreshExpiresAt, userId);
     }
 
     public Optional<AuthSession> findActiveByAccessToken(final String tokenString, final Instant now) {
@@ -90,7 +90,9 @@ public class SessionRepository {
                 odt(now)
         );
 
-        if (rows.isEmpty()) return Optional.empty();
+        if (rows.isEmpty()) {
+            return Optional.empty();
+        }
 
         jdbcTemplate.update("UPDATE app_sessions SET last_seen_at = ? WHERE token = ?", odt(now), token);
         return Optional.of(rows.get(0));
@@ -220,7 +222,13 @@ public class SessionRepository {
 
     public record AuthSession(long userId, String username, String role) {}
 
-    public record TokenPair(UUID accessToken, UUID refreshToken, Instant accessExpiresAt, Instant refreshExpiresAt) {}
+    public record TokenPair(
+            UUID accessToken,
+            UUID refreshToken,
+            Instant accessExpiresAt,
+            Instant refreshExpiresAt,
+            long userId
+    ) {}
 
     public record SessionRow(
             UUID token,
