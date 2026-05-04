@@ -1,3 +1,4 @@
+import com.google.protobuf.gradle.id
 import org.gradle.api.plugins.quality.Pmd
 
 plugins {
@@ -5,6 +6,7 @@ plugins {
     id("org.springframework.boot") version "3.5.11"
     id("io.spring.dependency-management") version "1.1.7"
     pmd
+    id("com.google.protobuf") version "0.10.0"
 }
 
 group = "id.ac.ui.cs.advprog"
@@ -28,6 +30,12 @@ repositories {
 }
 
 dependencies {
+    implementation(platform("io.grpc:grpc-bom:1.81.0"))
+    implementation("io.grpc:grpc-netty")
+    implementation("com.google.guava:guava:33.4.8-jre")
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
+    implementation("io.grpc:grpc-protobuf")
+    implementation("io.grpc:grpc-stub")
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     // auth + db
@@ -57,6 +65,7 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    systemProperty("auth.grpc.enabled", "false")
 }
 
 pmd {
@@ -71,6 +80,8 @@ pmd {
 // set ignoreFailures di task PMD (bukan di extension pmd {})
 tasks.withType<Pmd>().configureEach {
     ignoreFailures = false
+    exclude("**/generated/**")
+    exclude("**/build/generated/**")
     reports {
         xml.required.set(true)
         html.required.set(true)
@@ -78,9 +89,29 @@ tasks.withType<Pmd>().configureEach {
 }
 
 tasks.named<Pmd>("pmdMain") {
+    source = fileTree("src/main/java")
     ruleSetFiles = files("$rootDir/config/pmd/ruleset.xml")
 }
 
 tasks.named<Pmd>("pmdTest") {
+    source = fileTree("src/test/java")
     ruleSetFiles = files("$rootDir/config/pmd/ruleset-test.xml")
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.9"
+    }
+    plugins {
+        id("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.81.0"
+        }
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.plugins {
+                id("grpc")
+            }
+        }
+    }
 }

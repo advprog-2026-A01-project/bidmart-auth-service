@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package bidmart.auth.v1;
+
+option java_multiple_files = true;
+option java_package = "id.ac.ui.cs.advprog.bidmart.auth.grpc";
+option java_outer_classname = "AuthInternalProto";
+
+service AuthInternalService {
+  rpc GetAuthServiceStatus(AuthServiceStatusRequest) returns (AuthServiceStatusResponse);
+}
+
+message AuthServiceStatusRequest {
+  string caller_service = 1;
+}
+
+message AuthServiceStatusResponse {
+  bool healthy = 1;
+  string service_name = 2;
+  string issuer = 3;
+  string jwks_path = 4;
+  string message = 5;
+}
