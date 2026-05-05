@@ -65,7 +65,6 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    systemProperty("auth.grpc.enabled", "false")
 }
 
 pmd {
