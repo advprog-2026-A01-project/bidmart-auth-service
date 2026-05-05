@@ -30,8 +30,8 @@ repositories {
 }
 
 dependencies {
+    implementation("net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE")
     implementation(platform("io.grpc:grpc-bom:1.81.0"))
-    implementation("io.grpc:grpc-netty")
     implementation("com.google.guava:guava:33.4.8-jre")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("io.grpc:grpc-protobuf")

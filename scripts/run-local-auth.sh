@@ -13,15 +13,13 @@ export JWT_ISSUER="${JWT_ISSUER:-http://localhost:8081}"
 export JWT_KEY_ID="${JWT_KEY_ID:-bidmart-auth-local-key-1}"
 export JWT_ACCESS_TOKEN_TTL_MINUTES="${JWT_ACCESS_TOKEN_TTL_MINUTES:-15}"
 export AUTH_ACCESS_TTL_MINUTES="${AUTH_ACCESS_TTL_MINUTES:-15}"
-export AUTH_GRPC_ENABLED="${AUTH_GRPC_ENABLED:-true}"
 export AUTH_GRPC_PORT="${AUTH_GRPC_PORT:-9091}"
 
 if [[ -f ".local-keys/jwt_private.pem.b64" && -f ".local-keys/jwt_public.pem.b64" ]]; then
   export JWT_PRIVATE_KEY_BASE64="$(cat .local-keys/jwt_private.pem.b64)"
   export JWT_PUBLIC_KEY_BASE64="$(cat .local-keys/jwt_public.pem.b64)"
   echo "Using persistent local JWT RSA key from .local-keys/"
-echo "AUTH_GRPC_ENABLED=$AUTH_GRPC_ENABLED"
-echo "AUTH_GRPC_PORT=$AUTH_GRPC_PORT"
+  echo "AUTH_GRPC_PORT=$AUTH_GRPC_PORT"
 else
   echo "ERROR: .local-keys JWT key files not found."
   echo "Generate them first before running Auth Service."

@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@CleanAuthDatabase
 @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 class AuthControllerIT {
 

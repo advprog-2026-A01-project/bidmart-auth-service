@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@CleanAuthDatabase
 @TestPropertySource(properties = {
         "auth.max-sessions-per-user=1",
         "auth.overflow-policy=REVOKE_OLDEST"
