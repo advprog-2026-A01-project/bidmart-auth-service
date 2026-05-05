@@ -4,14 +4,15 @@ import id.ac.ui.cs.advprog.bidmart.auth.grpc.AuthInternalServiceGrpc;
 import id.ac.ui.cs.advprog.bidmart.auth.grpc.AuthServiceStatusRequest;
 import id.ac.ui.cs.advprog.bidmart.auth.grpc.AuthServiceStatusResponse;
 import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
+@GrpcService
 public class AuthInternalGrpcService extends AuthInternalServiceGrpc.AuthInternalServiceImplBase {
 
     private static final String SERVICE_NAME = "bidmart-auth-service";
     private static final String JWKS_PATH = "/.well-known/jwks.json";
+    private static final String UNKNOWN_CALLER = "unknown-caller";
 
     private final String jwtIssuer;
 
@@ -40,7 +41,7 @@ public class AuthInternalGrpcService extends AuthInternalServiceGrpc.AuthInterna
 
     private static String normalizeCaller(final String callerService) {
         if (callerService == null || callerService.isBlank()) {
-            return "unknown-caller";
+            return UNKNOWN_CALLER;
         }
         return callerService;
     }
