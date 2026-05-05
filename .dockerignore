@@ -1,0 +1,10 @@
+.gradle
+build
+.idea
+*.iml
+.env
+.env.local
+.local-keys
+.heroku-keys
+*.log
+.DS_Store
