@@ -6,6 +6,7 @@ plugins {
     id("org.springframework.boot") version "3.5.11"
     id("io.spring.dependency-management") version "1.1.7"
     pmd
+    jacoco
     id("com.google.protobuf") version "0.10.0"
 }
 
@@ -114,3 +115,22 @@ protobuf {
         }
     }
 }
+
+jacoco {
+    toolVersion = "0.8.13"
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(true)
+    }
+}
+
