@@ -52,8 +52,14 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x gradlew
 
-      - name: Test and PMD
-        run: ./gradlew clean generateProto test pmdMain pmdTest
+      - name: Test, coverage, and PMD
+        run: ./gradlew clean generateProto test jacocoTestReport pmdMain pmdTest
+
+      - name: Verify quality reports
+        run: ./scripts/verify-quality-reports.sh
+
+      - name: Print coverage summary
+        run: ./scripts/print-coverage-summary.sh
 
       - name: Upload quality reports
         uses: actions/upload-artifact@v4
@@ -63,6 +69,7 @@ jobs:
           path: |
             build/reports/tests/test
             build/reports/pmd
+            build/reports/jacoco/test
 
   docker:
     runs-on: ubuntu-latest
