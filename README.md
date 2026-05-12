@@ -1,5 +1,5 @@
 # BidMart Auth Service
-
+By Neal Guarddin - Advance Programming A - 2406348282
 `bidmart-auth-service` adalah microservice yang menangani autentikasi, otorisasi awal, manajemen user, session, role, permission, dan penerbitan token untuk sistem BidMart.
 
 Service ini adalah salah satu core backend service dalam arsitektur microservices BidMart.
